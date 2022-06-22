@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+// import logo from './logo.svg';
+// import './App.css';
+// import ApplicationViews from './ApplicationViews.js';
+// import { Route, useNavigate } from "react-router-dom";
+// import { Login } from "./Components/Auth/login";
+// import { Register } from "./Components/Auth/register";
+// import { HomeView } from "./Components/HomeView";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+// function App() {
+//   const Navigate = useNavigate()
+//   return (
+//     <>
+//         {/* <Route
+            
+//             render={() => {
+//                 if (localStorage.getItem("lu_token")) {
+//                     return (
+//                         <>
+//                             <ApplicationViews />
+//                         </>
+//                     );
+//                 } else {
+//                     return <Navigate replace to="/login" />;
+//                 }
+//             }}
+//             />
 
-export default App;
+//         <Route path="/login">
+//             <Login />
+//         </Route>
+
+//         <Route path="/register">
+//             <Register />
+//         </Route> */}
+
+//         <Route>
+//           <HomeView />
+//         </Route>
+    
+//     </>
+//   );
+// }
+
+// export default App;
