@@ -15,17 +15,7 @@ export const HomeView = () => {
 
   return (
     <>
-      <div className="layoutContainer">
-        <div className="sidebar">
-          <SideBar />
-        </div>
-        <div className="notesview">
-          <NotesView />
-        </div>
-        <div className="content">
-          <Content />
-        </div>
-      </div>
+      <NotesView />
     </>
   );
 };
