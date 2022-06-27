@@ -1,7 +1,8 @@
 import React from "react";
-import { SideBar } from "./Layout/sidebar";
 import { NotesView } from "./Layout/notesView";
-import { Content } from "./Layout/content";
+import { Login } from "./auth/Login";
+import { Register } from "./auth/Register";
+import { Route, Redirect } from "react-router-dom";
 
 export const HomeView = () => {
   // VARIABLES
@@ -15,7 +16,19 @@ export const HomeView = () => {
 
   return (
     <>
-      <NotesView />
+      <Route
+        render={() => {
+          if (localStorage.getItem("lu_token")) {
+            return (
+              <>
+                <NotesView />
+              </>
+            );
+          } else {
+            return <Redirect to="/login" />;
+          }
+        }}
+      />
     </>
   );
 };
