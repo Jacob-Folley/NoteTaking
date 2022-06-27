@@ -1,30 +1,33 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import { HomeView } from "./Components/HomeView"
-
-
+import { Route } from "react-router-dom";
+import { HomeView } from "./Components/HomeView";
+import { Login } from "./Components/auth/Login";
+import { Register } from "./Components/auth/Register";
 
 const ApplicationViews = () => {
-    // VARIABLES
-    //----------------------------------------------------------------
+  // VARIABLES
+  //----------------------------------------------------------------
 
+  // USE STATES
+  //----------------------------------------------------------------
 
-    // USE STATES
-    //----------------------------------------------------------------
+  // USE EFFECTS
+  //----------------------------------------------------------------
 
+  return (
+    <>
+      <Route path="/login">
+        <Login />
+      </Route>
+      <Route path="/register">
+        <Register />
+      </Route>
 
-    // USE EFFECTS
-    //----------------------------------------------------------------
+      <Route exact path="/">
+        <HomeView />
+      </Route>
+    </>
+  );
+};
 
-    return (
-        <>
-            <Routes>
-                <Route exact path="/" element={<HomeView />} />
-            </Routes>
-        </>
-    )
-
-
-}
-
-export default ApplicationViews
+export default ApplicationViews;
