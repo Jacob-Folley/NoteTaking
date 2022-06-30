@@ -14,6 +14,7 @@ import {
 export const NotesView = () => {
   const user = parseInt(localStorage.getItem("userId"));
   const history = useHistory();
+  const [edit, setEdit] = useState(false);
   const [noteId, setNoteId] = useState(0);
   const [newnote, setBoolean] = useState(false);
   const [notes, setNotes] = useState([]);
@@ -26,6 +27,9 @@ export const NotesView = () => {
     datetime: Date(),
     user_id: user,
   });
+
+  // USE EFFECTS
+  //------------------------------------------------------------------------------------
 
   useEffect(() => {
     retrieveNotes();
@@ -42,6 +46,9 @@ export const NotesView = () => {
       })
     );
   }, [notes]);
+
+  // FUNCTIONS
+  //------------------------------------------------------------------------------------
 
   const changeFormState = (domEvent) => {
     const copy = { ...addnote };
@@ -67,7 +74,13 @@ export const NotesView = () => {
         <h1>{note.title}</h1>
         <p>{note.tags}</p>
         <p>{note.body}</p>
-        <button>Edit</button>
+        <button
+          onClick={() => {
+            setEdit(true);
+          }}
+        >
+          Edit
+        </button>
         <button>Delete</button>
       </>
     );
@@ -111,43 +124,47 @@ export const NotesView = () => {
     );
   };
 
-  // const editNote = () => {
-  //   return (
-  //     <>
-  //       <input
-  //         name="title"
-  //         placeholder="Title"
-  //         onChange={changeFormState}
-  //       >{note.title}</input>
-  //       <input placeholder="Tags"></input>
-  //       <p>{Date.now()}</p>
-  //       <textarea
-  //         name="body"
-  //         placeholder="NewNote"
-  //         onChange={changeFormState}
-  //       >{note.body}</textarea>
-  //       <button
-  //         onClick={(evt) => {
-  //           evt.preventDefault();
+  const editNote = () => {
+    return (
+      <>
+        <input
+          name="title"
+          placeholder="Title"
+          defaultValue={note.title}
+          onChange={changeFormState}
+        />
+        <input placeholder="Tags"></input>
+        <p>{Date.now()}</p>
+        <textarea
+          name="body"
+          placeholder="NewNote"
+          defaultValue={note.body}
+          onChange={changeFormState}
+        />
+        <button
+          onClick={(evt) => {
+            evt.preventDefault();
 
-  //           const note = {
-  //             title: addnote.title,
-  //             body: addnote.body,
-  //             tags: addnote.tags,
-  //             datetime: addnote.datetime,
-  //             user_id: addnote.user_id,
-  //           };
+            const editnote = {
+              id: noteId,
+              title: addnote.title == "" ? note.title : addnote.title,
+              body: addnote.body == "" ? note.body : addnote.body,
+              tags: addnote.tags,
+              datetime: note.datetime,
+              user_id: user,
+            };
 
-  //           updateNote(note).then(() => history.push("/"));
-  //           retrieveNotes();
-  //           setBoolean(false);
-  //         }}
-  //       >
-  //         Save
-  //       </button>
-  //     </>
-  //   );
-  // };
+            updateNote(editnote).then(() => history.push("/"));
+            retrieveNotes();
+            setEdit(false);
+            setBoolean(false);
+          }}
+        >
+          Save
+        </button>
+      </>
+    );
+  };
 
   const Content = () => {
     if (usernotes.length > 0) {
@@ -164,6 +181,9 @@ export const NotesView = () => {
       return "";
     }
   };
+
+  // RETURN
+  //------------------------------------------------------------------------------------
 
   return (
     <>
@@ -214,7 +234,13 @@ export const NotesView = () => {
 
         {/* Content */}
         <div className="content">
-          {newnote ? newNote() : noteId < 1 ? Content() : noteRetrieved()}
+          {edit == true
+            ? editNote()
+            : newnote
+            ? newNote()
+            : noteId < 1
+            ? Content()
+            : noteRetrieved()}
         </div>
       </div>
     </>
