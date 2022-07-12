@@ -93,9 +93,8 @@ export const NotesView = () => {
         </button>
         <button
           onClick={() => {
-            deleteNote(noteId).then(() => {
-              setNoteId(usernotes[getLastNote()].id);
-            });
+            deleteNote(noteId).then(retrieveNotes());
+            setNoteId(0);
           }}
         >
           Delete
@@ -213,8 +212,27 @@ export const NotesView = () => {
           <h1>{usernotes[usernotes.length - 1].title}</h1>
           <p>{usernotes[usernotes.length - 1].tags}</p>
           <p>{usernotes[usernotes.length - 1].body}</p>
-          <button>Edit</button>
-          <button>Delete</button>
+          <button
+            onClick={() => {
+              setNoteId(usernotes[usernotes.length - 1].id);
+              setEdit(true);
+            }}
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => {
+              deleteNote(usernotes[usernotes.length - 1].id).then(() => {
+                retrieveNotes()
+                  .then(filterNotes())
+                  .then(() => {
+                    setNoteId(usernotes[getLastNote()].id);
+                  });
+              });
+            }}
+          >
+            Delete
+          </button>
         </>
       );
     } else {
