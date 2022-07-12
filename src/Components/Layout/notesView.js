@@ -12,8 +12,11 @@ import {
 } from "../Fetches/noteFetch";
 
 export const NotesView = () => {
+  // VARIABLES
   const user = parseInt(localStorage.getItem("userId"));
   const history = useHistory();
+
+  //STATES
   const [edit, setEdit] = useState(false);
   const [noteId, setNoteId] = useState(0);
   const [newnote, setBoolean] = useState(false);
@@ -31,43 +34,50 @@ export const NotesView = () => {
   // USE EFFECTS
   //------------------------------------------------------------------------------------
 
+  // FETCHES ALL NOTES THEN SETS IT TO 'notes'
   useEffect(() => {
     retrieveNotes();
   }, []);
 
+  // CALLS A FUNCTION THAT GETS A SINGLE NOTE BY ID THEN SETS IT TO 'note'
   useEffect(() => {
     retrieveNote(noteId);
   }, [noteId]);
 
+  // GOES THROUGH ALL THE NOTES AND ONLY RETURNS THE NOTES OF CURRENT USER
   useEffect(() => {
-    setUserNotes(
-      notes.filter((note) => {
-        return note.user_id.id == user;
-      })
-    );
+    filterNotes();
   }, [notes]);
 
   // FUNCTIONS
   //------------------------------------------------------------------------------------
 
+  // CHANGES INPUT THAT IS BEING ENTERED INTO THE FORM
   const changeFormState = (domEvent) => {
     const copy = { ...addnote };
     copy[domEvent.target.name] = domEvent.target.value;
     setAddNote(copy);
   };
 
+  const getLastNote = () => {
+    return usernotes.length - 1;
+  };
+
+  // GETS ALL NOTES AND SETS IT TO 'notes'
   const retrieveNotes = () => {
     getNotes().then((data) => {
       setNotes(data);
     });
   };
 
+  // GETS A SINGLE NOTE AND SETS IT TO 'note'
   const retrieveNote = (id) => {
     getNote(id).then((data) => {
       setNote(data);
     });
   };
 
+  // DISPLAYS THE NOTE THAT IS SELECTED
   const noteRetrieved = () => {
     return (
       <>
@@ -81,26 +91,49 @@ export const NotesView = () => {
         >
           Edit
         </button>
-        <button>Delete</button>
+        <button
+          onClick={() => {
+            deleteNote(noteId).then(() => {
+              setNoteId(usernotes[getLastNote()].id);
+            });
+          }}
+        >
+          Delete
+        </button>
       </>
     );
   };
 
+  // FILTERS NOTES TO GET ONLY CURRENT USER NOTES
+  const filterNotes = () => {
+    setUserNotes(
+      notes.filter((note) => {
+        return note.user_id.id == user;
+      })
+    );
+  };
+
+  // DISPLAYS THE FORM FOR A NEW NOTE
   const newNote = () => {
     return (
       <>
+        {/* TITLE */}
         <input
           name="title"
           placeholder="Title"
           onChange={changeFormState}
         ></input>
+        {/* TAGS */}
         <input placeholder="Tags"></input>
+        {/* DATETIME */}
         <p>{Date.now()}</p>
+        {/* BODY */}
         <textarea
           name="body"
           placeholder="NewNote"
           onChange={changeFormState}
         ></textarea>
+        {/* SAVE BUTTON */}
         <button
           onClick={(evt) => {
             evt.preventDefault();
@@ -113,8 +146,13 @@ export const NotesView = () => {
               user_id: addnote.user_id,
             };
 
-            createNote(note).then(() => history.push("/"));
-            retrieveNotes();
+            createNote(note).then(() => {
+              retrieveNotes()
+                .then(filterNotes())
+                .then(() => {
+                  setNoteId(usernotes[getLastNote()].id);
+                });
+            });
             setBoolean(false);
           }}
         >
@@ -124,6 +162,7 @@ export const NotesView = () => {
     );
   };
 
+  // DISPLAYS THE FORM TO EDIT A NOTE
   const editNote = () => {
     return (
       <>
@@ -166,6 +205,7 @@ export const NotesView = () => {
     );
   };
 
+  // DISPLAYS THE NOTE WHEN NOTHING IS SELECTED
   const Content = () => {
     if (usernotes.length > 0) {
       return (
@@ -182,6 +222,17 @@ export const NotesView = () => {
     }
   };
 
+  // CHECKS THE STATE OF WHAT CONTENT NEEDS TO BE DISPLAYED
+  const contentState = () => {
+    return edit == true
+      ? editNote()
+      : newnote
+      ? newNote()
+      : noteId < 1
+      ? Content()
+      : noteRetrieved();
+  };
+
   // RETURN
   //------------------------------------------------------------------------------------
 
@@ -189,13 +240,16 @@ export const NotesView = () => {
     <>
       <div className="layoutContainer">
         {/* SideBar */}
+
         <div className="sidebar">
           <SideBar />
         </div>
-        {/* -------------------------------------------------------------------------------- */}
 
+        {/* -------------------------------------------------------------------------------- */}
         {/* NotesView */}
+
         <div className="notesview">
+          {/* NEW NOTE BUTTON */}
           <button
             onClick={() => {
               setBoolean(true);
@@ -203,6 +257,7 @@ export const NotesView = () => {
           >
             Add Note
           </button>
+          {/* SORTING FUNCTIONS*/}
           <h1>Notes</h1>
           <input placeholder="Search"></input>
           <p>sort</p>
@@ -211,6 +266,7 @@ export const NotesView = () => {
             <option>oldest</option>
           </select>
 
+          {/* LIST OF NOTES */}
           <div>
             {usernotes.map((note) => {
               return (
@@ -230,18 +286,11 @@ export const NotesView = () => {
             })}
           </div>
         </div>
-        {/* -------------------------------------------------------------------------------- */}
 
+        {/* -------------------------------------------------------------------------------- */}
         {/* Content */}
-        <div className="content">
-          {edit == true
-            ? editNote()
-            : newnote
-            ? newNote()
-            : noteId < 1
-            ? Content()
-            : noteRetrieved()}
-        </div>
+
+        <div className="content">{contentState()}</div>
       </div>
     </>
   );
