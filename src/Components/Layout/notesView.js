@@ -49,6 +49,10 @@ export const NotesView = () => {
     filterNotes();
   }, [notes]);
 
+  useEffect(() => {
+    contentState();
+  }, [noteId]);
+
   // FUNCTIONS
   //------------------------------------------------------------------------------------
 
@@ -93,8 +97,14 @@ export const NotesView = () => {
         </button>
         <button
           onClick={() => {
-            deleteNote(noteId).then(retrieveNotes());
-            setNoteId(0);
+            deleteNote(noteId)
+              .then(() => {
+                setNoteId(0);
+              })
+              .then(() => {
+                retrieveNotes();
+              })
+              .then(filterNotes());
           }}
         >
           Delete
