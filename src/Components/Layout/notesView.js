@@ -120,9 +120,12 @@ export const NotesView = () => {
 
   // FILTERS NOTES TO GET ONLY CURRENT USER NOTES
   const filterNotes = () => {
+    let filtered = notes.filter((note) => {
+      return note.user_id.id == user;
+    });
     setUserNotes(
-      notes.filter((note) => {
-        return note.user_id.id == user;
+      filtered.sort((a, b) => {
+        return b.id - a.id;
       })
     );
   };
@@ -266,15 +269,15 @@ export const NotesView = () => {
       : noteRetrieved();
   };
 
-  const sortNew = () => {
+  const sortOld = () => {
     let notesCopy = usernotes.map((notes) => ({ ...notes }));
     notesCopy.sort((a, b) => {
-      return b.id - a.id;
+      return a.id - b.id;
     });
     return setSort(notesCopy);
   };
 
-  const sortOld = () => {
+  const sortNew = () => {
     return setSort(usernotes);
   };
 
