@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+// import Datetime from "react-datetime";
 import { Content } from "./content";
 import { NewNote } from "./NewNote";
 import { SideBar } from "./sidebar";
@@ -15,6 +16,7 @@ export const NotesView = () => {
   // VARIABLES
   const user = parseInt(localStorage.getItem("userId"));
   const history = useHistory();
+  const locale = "en";
 
   //STATES
   const [edit, setEdit] = useState(false);
@@ -25,6 +27,8 @@ export const NotesView = () => {
   const [usernotes, setUserNotes] = useState([]);
   const [sorted, setSort] = useState([]);
   const [search, setSearch] = useState("");
+  const [today, setDate] = useState(new Date());
+  const [newTask, setTask] = useState(false);
   const [addnote, setAddNote] = useState({
     title: "",
     body: "",
@@ -69,6 +73,17 @@ export const NotesView = () => {
           })
         );
   }, [search]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      // Creates an interval which will update the current data every minute
+      // This will trigger a rerender every component that uses the useDate hook.
+      setDate(new Date());
+    }, 60 * 1000);
+    return () => {
+      clearInterval(timer); // Return a funtion to clear the timer so that it will stop being called on unmount
+    };
+  }, []);
 
   // FUNCTIONS
   //------------------------------------------------------------------------------------
@@ -302,6 +317,29 @@ export const NotesView = () => {
     }
   };
 
+  const day = today.toLocaleDateString(locale, { weekday: "long" });
+  const date = `${day}, ${today.getDate()} ${today.toLocaleDateString(locale, {
+    month: "long",
+  })}\n\n`;
+
+  const time = today.toLocaleTimeString(locale, {
+    hour: "numeric",
+    hour12: true,
+    minute: "numeric",
+  });
+
+  const newtask = () => {
+    const elem = document.getElementById("newTask");
+    return (
+      <>
+        <input></input>
+        <textarea></textarea>
+        <button>submit</button>
+        <button>cancel</button>
+      </>
+    );
+  };
+
   // RETURN
   //------------------------------------------------------------------------------------
 
@@ -311,7 +349,31 @@ export const NotesView = () => {
         {/* SideBar */}
 
         <div className="sidebar">
-          <SideBar />
+          <h1>{date}</h1>
+          <p>{time}</p>
+
+          {newTask ? (
+            <>
+              <input></input>
+              <textarea></textarea>
+              <button>submit</button>
+              <button
+                onClick={() => {
+                  setTask(false);
+                }}
+              >
+                cancel
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => {
+                setTask(true);
+              }}
+            >
+              new task
+            </button>
+          )}
         </div>
 
         {/* -------------------------------------------------------------------------------- */}
