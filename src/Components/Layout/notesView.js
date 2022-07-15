@@ -23,6 +23,7 @@ export const NotesView = () => {
   const [notes, setNotes] = useState([]);
   const [note, setNote] = useState({});
   const [usernotes, setUserNotes] = useState([]);
+  const [sorted, setSort] = useState([]);
   const [addnote, setAddNote] = useState({
     title: "",
     body: "",
@@ -52,6 +53,10 @@ export const NotesView = () => {
   useEffect(() => {
     contentState();
   }, [noteId]);
+
+  useEffect(() => {
+    setSort(usernotes);
+  }, [usernotes]);
 
   // FUNCTIONS
   //------------------------------------------------------------------------------------
@@ -261,6 +266,18 @@ export const NotesView = () => {
       : noteRetrieved();
   };
 
+  const sortNew = () => {
+    let notesCopy = usernotes.map((notes) => ({ ...notes }));
+    notesCopy.sort((a, b) => {
+      return b.id - a.id;
+    });
+    return setSort(notesCopy);
+  };
+
+  const sortOld = () => {
+    return setSort(usernotes);
+  };
+
   // RETURN
   //------------------------------------------------------------------------------------
 
@@ -285,18 +302,31 @@ export const NotesView = () => {
           >
             Add Note
           </button>
+
           {/* SORTING FUNCTIONS*/}
           <h1>Notes</h1>
           <input placeholder="Search"></input>
+
           <p>sort</p>
-          <select>
-            <option>newest</option>
-            <option>oldest</option>
-          </select>
+          <button
+            onClick={() => {
+              sortNew();
+            }}
+          >
+            newest
+          </button>
+
+          <button
+            onClick={() => {
+              sortOld();
+            }}
+          >
+            oldest
+          </button>
 
           {/* LIST OF NOTES */}
           <div>
-            {usernotes.map((note) => {
+            {sorted.map((note) => {
               return (
                 <>
                   <div>
