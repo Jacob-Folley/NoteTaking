@@ -24,6 +24,7 @@ export const NotesView = () => {
   const [note, setNote] = useState({});
   const [usernotes, setUserNotes] = useState([]);
   const [sorted, setSort] = useState([]);
+  const [search, setSearch] = useState("");
   const [addnote, setAddNote] = useState({
     title: "",
     body: "",
@@ -57,6 +58,17 @@ export const NotesView = () => {
   useEffect(() => {
     setSort(usernotes);
   }, [usernotes]);
+
+  // CHECKS INPUT IN THE SEARCH BAR TO SEE IF IT MATCHES RESULTS
+  useEffect(() => {
+    search === ""
+      ? retrieveNotes()
+      : setNotes(
+          notes.filter((note) => {
+            return note.title.toLowerCase().includes(search.toLowerCase());
+          })
+        );
+  }, [search]);
 
   // FUNCTIONS
   //------------------------------------------------------------------------------------
@@ -281,6 +293,15 @@ export const NotesView = () => {
     return setSort(usernotes);
   };
 
+  const searchFunction = () => {
+    const foundNote = usernotes.find((usernotes) => {
+      return usernotes.title === search;
+    });
+    if (foundNote) {
+      setNoteId(foundNote.id);
+    }
+  };
+
   // RETURN
   //------------------------------------------------------------------------------------
 
@@ -308,7 +329,13 @@ export const NotesView = () => {
 
           {/* SORTING FUNCTIONS*/}
           <h1>Notes</h1>
-          <input placeholder="Search"></input>
+          <input
+            onChange={(e) => {
+              const searchItem = e.target.value;
+              setSearch(searchItem);
+            }}
+            placeholder="Search"
+          ></input>
 
           <p>sort</p>
           <button
