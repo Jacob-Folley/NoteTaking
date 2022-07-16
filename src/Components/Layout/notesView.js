@@ -11,6 +11,13 @@ import {
   updateNote,
   deleteNote,
 } from "../Fetches/noteFetch";
+import {
+  getTasks,
+  createTask,
+  getTask,
+  updateTask,
+  deleteTask,
+} from "../Fetches/tasksFetch";
 
 export const NotesView = () => {
   // VARIABLES
@@ -19,6 +26,7 @@ export const NotesView = () => {
   const locale = "en";
 
   //STATES
+  const [tasks, setTasks] = useState([]);
   const [edit, setEdit] = useState(false);
   const [noteId, setNoteId] = useState(0);
   const [newnote, setBoolean] = useState(false);
@@ -28,12 +36,18 @@ export const NotesView = () => {
   const [sorted, setSort] = useState([]);
   const [search, setSearch] = useState("");
   const [today, setDate] = useState(new Date());
-  const [newTask, setTask] = useState(false);
+  const [newTask, setTaskBoolean] = useState(false);
   const [addnote, setAddNote] = useState({
     title: "",
     body: "",
     tags: "",
     datetime: Date(),
+    user_id: user,
+  });
+  const [addtask, setTask] = useState({
+    title: "",
+    body: "",
+    datetime: Date.now(),
     user_id: user,
   });
 
@@ -85,6 +99,10 @@ export const NotesView = () => {
     };
   }, []);
 
+  useEffect(() => {
+    retrieveTasks();
+  }, []);
+
   // FUNCTIONS
   //------------------------------------------------------------------------------------
 
@@ -93,6 +111,12 @@ export const NotesView = () => {
     const copy = { ...addnote };
     copy[domEvent.target.name] = domEvent.target.value;
     setAddNote(copy);
+  };
+
+  const changeTaskState = (domEvent) => {
+    const copy = { ...addtask };
+    copy[domEvent.target.name] = domEvent.target.value;
+    setTask(copy);
   };
 
   const getLastNote = () => {
@@ -329,7 +353,6 @@ export const NotesView = () => {
   });
 
   const newtask = () => {
-    const elem = document.getElementById("newTask");
     return (
       <>
         <input></input>
@@ -338,6 +361,12 @@ export const NotesView = () => {
         <button>cancel</button>
       </>
     );
+  };
+
+  const retrieveTasks = () => {
+    getTasks().then((data) => {
+      setTasks(data);
+    });
   };
 
   // RETURN
@@ -354,12 +383,37 @@ export const NotesView = () => {
 
           {newTask ? (
             <>
-              <input></input>
-              <textarea></textarea>
-              <button>submit</button>
+              <input
+                name="title"
+                placeholder="Title"
+                onChange={changeTaskState}
+              ></input>
+              <textarea
+                name="body"
+                placeholder="NewNote"
+                onChange={changeTaskState}
+              ></textarea>
+              <button
+                onClick={(evt) => {
+                  evt.preventDefault();
+
+                  const task = {
+                    title: addtask.title,
+                    body: addtask.body,
+                    tags: addtask.tags,
+                    datetime: addtask.datetime,
+                    user_id: addtask.user_id,
+                  };
+
+                  createTask(task).then(() => retrieveTasks());
+                  setTaskBoolean(false);
+                }}
+              >
+                submit
+              </button>
               <button
                 onClick={() => {
-                  setTask(false);
+                  setTaskBoolean(false);
                 }}
               >
                 cancel
@@ -368,12 +422,30 @@ export const NotesView = () => {
           ) : (
             <button
               onClick={() => {
-                setTask(true);
+                setTaskBoolean(true);
               }}
             >
               new task
             </button>
           )}
+
+          <div>
+            {tasks.map((task) => {
+              return (
+                <>
+                  <div>
+                    <h1>{task.title}</h1>
+                    <p>{task.body}</p>
+                    <button
+                      onClick={() =>
+                        deleteTask(task.id).then(() => retrieveTasks())
+                      }
+                    ></button>
+                  </div>
+                </>
+              );
+            })}
+          </div>
         </div>
 
         {/* -------------------------------------------------------------------------------- */}
