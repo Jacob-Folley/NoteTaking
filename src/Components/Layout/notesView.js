@@ -141,6 +141,13 @@ export const NotesView = () => {
   const noteRetrieved = () => {
     return (
       <>
+        <button
+          onClick={() => {
+            history.push(`/notes/${note.id}`);
+          }}
+        >
+          Expand
+        </button>
         <h1>{note.title}</h1>
         <p>{note.tags}</p>
         <p>{note.body}</p>
@@ -278,6 +285,13 @@ export const NotesView = () => {
     if (usernotes.length > 0) {
       return (
         <>
+          <button
+            onClick={() => {
+              history.push(`/notes/${usernotes[usernotes.length - 1].id}`);
+            }}
+          >
+            Expand
+          </button>
           <h1>{usernotes[usernotes.length - 1].title}</h1>
           <p>{usernotes[usernotes.length - 1].tags}</p>
           <p>{usernotes[usernotes.length - 1].body}</p>
@@ -378,6 +392,13 @@ export const NotesView = () => {
         {/* SideBar */}
 
         <div className="sidebar">
+          <button
+            onClick={() => {
+              history.push(`/tasks`);
+            }}
+          >
+            Expand
+          </button>
           <h1>{date}</h1>
           <p>{time}</p>
 
@@ -453,6 +474,13 @@ export const NotesView = () => {
 
         <div className="notesview">
           {/* NEW NOTE BUTTON */}
+          <button
+            onClick={() => {
+              history.push(`/notes`);
+            }}
+          >
+            Expand
+          </button>
           <button
             onClick={() => {
               setBoolean(true);
