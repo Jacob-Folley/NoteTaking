@@ -141,37 +141,51 @@ export const NotesView = () => {
   const noteRetrieved = () => {
     return (
       <>
-        <button
-          onClick={() => {
-            history.push(`/notes/${note.id}`);
-          }}
-        >
-          Expand
-        </button>
-        <h1>{note.title}</h1>
-        <p>{note.tags}</p>
-        <p>{note.body}</p>
-        <button
-          onClick={() => {
-            setEdit(true);
-          }}
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => {
-            deleteNote(noteId)
-              .then(() => {
-                setNoteId(0);
-              })
-              .then(() => {
-                retrieveNotes();
-              })
-              .then(filterNotes());
-          }}
-        >
-          Delete
-        </button>
+        <div className="header">
+          <button
+            className="expand"
+            onClick={() => {
+              history.push(`/tasks`);
+            }}
+          >
+            <span class="material-icons">open_in_full</span>
+          </button>
+        </div>
+
+        <div className="contentContainer">
+          <div className="contentTitle">
+            <div>
+              <h2>{note.title}</h2>
+            </div>
+            <div>
+              <button
+                className="ButtonsHeaderRight"
+                onClick={() => {
+                  setEdit(true);
+                }}
+              >
+                Edit
+              </button>
+              <button
+                className="ButtonsHeaderRight"
+                onClick={() => {
+                  deleteNote(noteId)
+                    .then(() => {
+                      setNoteId(0);
+                    })
+                    .then(() => {
+                      retrieveNotes();
+                    })
+                    .then(filterNotes());
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+          <p className="contentTags">{note.tags}</p>
+          <p className="contentBody">{note.body}</p>
+        </div>
       </>
     );
   };
@@ -285,37 +299,55 @@ export const NotesView = () => {
     if (usernotes.length > 0) {
       return (
         <>
-          <button
-            onClick={() => {
-              history.push(`/notes/${usernotes[usernotes.length - 1].id}`);
-            }}
-          >
-            Expand
-          </button>
-          <h1>{usernotes[usernotes.length - 1].title}</h1>
-          <p>{usernotes[usernotes.length - 1].tags}</p>
-          <p>{usernotes[usernotes.length - 1].body}</p>
-          <button
-            onClick={() => {
-              setNoteId(usernotes[usernotes.length - 1].id);
-              setEdit(true);
-            }}
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => {
-              deleteNote(usernotes[usernotes.length - 1].id).then(() => {
-                retrieveNotes()
-                  .then(filterNotes())
-                  .then(() => {
-                    setNoteId(usernotes[getLastNote()].id);
-                  });
-              });
-            }}
-          >
-            Delete
-          </button>
+          <div className="header">
+            <button
+              className="expand"
+              onClick={() => {
+                history.push(`/tasks`);
+              }}
+            >
+              <span class="material-icons">open_in_full</span>
+            </button>
+          </div>
+          <div className="contentContainer">
+            <div className="contentTitle">
+              <div>
+                <h2>{usernotes[usernotes.length - 1].title}</h2>
+              </div>
+              <div>
+                <button
+                  className="ButtonsHeaderRight"
+                  onClick={() => {
+                    setNoteId(usernotes[usernotes.length - 1].id);
+                    setEdit(true);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="ButtonsHeaderRight"
+                  onClick={() => {
+                    deleteNote(usernotes[usernotes.length - 1].id).then(() => {
+                      retrieveNotes()
+                        .then(filterNotes())
+                        .then(() => {
+                          setNoteId(usernotes[getLastNote()].id);
+                        });
+                    });
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+
+            <p className="contentTags">
+              {usernotes[usernotes.length - 1].tags}
+            </p>
+            <p className="contentBody">
+              {usernotes[usernotes.length - 1].body}
+            </p>
+          </div>
         </>
       );
     } else {
@@ -369,10 +401,45 @@ export const NotesView = () => {
   const newtask = () => {
     return (
       <>
-        <input></input>
-        <textarea></textarea>
-        <button>submit</button>
-        <button>cancel</button>
+        <div className="taskModal">
+          <div className="taskModalContent">
+            <input
+              name="title"
+              placeholder="Title"
+              onChange={changeTaskState}
+            ></input>
+            <textarea
+              name="body"
+              placeholder="NewNote"
+              onChange={changeTaskState}
+            ></textarea>
+            <button
+              onClick={(evt) => {
+                evt.preventDefault();
+
+                const task = {
+                  title: addtask.title,
+                  body: addtask.body,
+                  tags: addtask.tags,
+                  datetime: addtask.datetime,
+                  user_id: addtask.user_id,
+                };
+
+                createTask(task).then(() => retrieveTasks());
+                setTaskBoolean(false);
+              }}
+            >
+              submit
+            </button>
+            <button
+              onClick={() => {
+                setTaskBoolean(false);
+              }}
+            >
+              cancel
+            </button>
+          </div>
+        </div>
       </>
     );
   };
@@ -383,6 +450,8 @@ export const NotesView = () => {
     });
   };
 
+  const highlight = () => {};
+
   // RETURN
   //------------------------------------------------------------------------------------
 
@@ -392,76 +461,92 @@ export const NotesView = () => {
         {/* SideBar */}
 
         <div className="sidebar">
-          <button
-            onClick={() => {
-              history.push(`/tasks`);
-            }}
-          >
-            Expand
-          </button>
-          <h1>{date}</h1>
-          <p>{time}</p>
-
-          {newTask ? (
-            <>
-              <input
-                name="title"
-                placeholder="Title"
-                onChange={changeTaskState}
-              ></input>
-              <textarea
-                name="body"
-                placeholder="NewNote"
-                onChange={changeTaskState}
-              ></textarea>
-              <button
-                onClick={(evt) => {
-                  evt.preventDefault();
-
-                  const task = {
-                    title: addtask.title,
-                    body: addtask.body,
-                    tags: addtask.tags,
-                    datetime: addtask.datetime,
-                    user_id: addtask.user_id,
-                  };
-
-                  createTask(task).then(() => retrieveTasks());
-                  setTaskBoolean(false);
-                }}
-              >
-                submit
-              </button>
-              <button
-                onClick={() => {
-                  setTaskBoolean(false);
-                }}
-              >
-                cancel
-              </button>
-            </>
-          ) : (
+          <div className="header">
             <button
+              className="expand"
               onClick={() => {
-                setTaskBoolean(true);
+                history.push(`/tasks`);
               }}
             >
-              new task
+              <span class="material-icons">open_in_full</span>
             </button>
-          )}
+          </div>
+
+          <h3 className="date">{date}</h3>
+          <p className="time">{time}</p>
+
+          <div className="addTaskContainer">
+            {newTask ? (
+              <>
+                <div className="taskModal">
+                  <div className="taskModalContent">
+                    <input
+                      name="title"
+                      placeholder="Title"
+                      onChange={changeTaskState}
+                    ></input>
+                    <textarea
+                      name="body"
+                      placeholder="NewNote"
+                      onChange={changeTaskState}
+                    ></textarea>
+                    <button
+                      onClick={(evt) => {
+                        evt.preventDefault();
+
+                        const task = {
+                          title: addtask.title,
+                          body: addtask.body,
+                          tags: addtask.tags,
+                          datetime: addtask.datetime,
+                          user_id: addtask.user_id,
+                        };
+
+                        createTask(task).then(() => retrieveTasks());
+                        setTaskBoolean(false);
+                      }}
+                    >
+                      submit
+                    </button>
+                    <button
+                      onClick={() => {
+                        setTaskBoolean(false);
+                      }}
+                    >
+                      cancel
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <button
+                className="addTask"
+                onClick={(e) => {
+                  setTaskBoolean(true);
+                }}
+              >
+                ➕ add task
+              </button>
+            )}
+          </div>
 
           <div>
             {tasks.map((task) => {
               return (
                 <>
-                  <div>
-                    <h1>{task.title}</h1>
-                    <p>{task.body}</p>
-                    <button
-                      onClick={() =>
-                        deleteTask(task.id).then(() => retrieveTasks())
-                      }
-                    ></button>
+                  <div className="todo">
+                    <div className="taskLayout">
+                      <button
+                        className="checkbox"
+                        onClick={() =>
+                          deleteTask(task.id).then(() => retrieveTasks())
+                        }
+                      ></button>
+                      <h3 className="task">{task.title}</h3>
+                    </div>
+                    <div>
+                      <p className="taskDescription">{task.body}</p>
+                    </div>
                   </div>
                 </>
               );
@@ -474,62 +559,79 @@ export const NotesView = () => {
 
         <div className="notesview">
           {/* NEW NOTE BUTTON */}
-          <button
-            onClick={() => {
-              history.push(`/notes`);
-            }}
-          >
-            Expand
-          </button>
-          <button
-            onClick={() => {
-              setBoolean(true);
-            }}
-          >
-            Add Note
-          </button>
+          <div className="header">
+            <button
+              className="expand"
+              onClick={() => {
+                history.push(`/notes`);
+              }}
+            >
+              <span class="material-icons">open_in_full</span>
+            </button>
+          </div>
 
           {/* SORTING FUNCTIONS*/}
-          <h1>Notes</h1>
-          <input
-            onChange={(e) => {
-              const searchItem = e.target.value;
-              setSearch(searchItem);
-            }}
-            placeholder="Search"
-          ></input>
+          <div className="searchContainer">
+            <input
+              className="search"
+              onChange={(e) => {
+                const searchItem = e.target.value;
+                setSearch(searchItem);
+              }}
+              placeholder="Search"
+            ></input>
+            <button className="searchButton">go</button>
+          </div>
 
-          <p>sort</p>
-          <button
-            onClick={() => {
-              sortNew();
-            }}
-          >
-            newest
-          </button>
+          <div className="sortContainer">
+            <div className="oldNew">
+              <button
+                className="SortButtons"
+                onClick={() => {
+                  sortNew();
+                }}
+              >
+                newest
+              </button>
 
-          <button
-            onClick={() => {
-              sortOld();
-            }}
-          >
-            oldest
-          </button>
+              <button
+                className="SortButtons"
+                onClick={() => {
+                  sortOld();
+                }}
+              >
+                oldest
+              </button>
+            </div>
+            <div>
+              <button
+                className="addButton"
+                onClick={() => {
+                  setBoolean(true);
+                }}
+              >
+                <span class="material-icons">add</span>
+              </button>
+            </div>
+          </div>
 
           {/* LIST OF NOTES */}
           <div>
             {sorted.map((note) => {
               return (
                 <>
-                  <div>
-                    <h1
-                      onClick={() => {
+                  <div className="notesList">
+                    <div
+                      className="note"
+                      tabindex="0"
+                      id="box"
+                      onClick={(evt) => {
                         setNoteId(note.id);
                       }}
                     >
-                      {note.title}
-                    </h1>
-                    <p>{note.datetime}</p>
+                      <h3 className="noteTitle">{note.title}</h3>
+                      <p className="noteDate">{note.datetime.substr(0, 10)}</p>
+                    </div>
                   </div>
                 </>
               );
