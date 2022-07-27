@@ -452,6 +452,20 @@ export const NotesView = () => {
 
   const highlight = () => {};
 
+  // Get the modal
+  let modal = document.getElementById("Modal");
+
+  // Get the button that opens the modal
+  let btn = document.getElementById("myBtn");
+
+  // Get the <span> element that closes the modal
+  let span = document.getElementsByClassName("close")[0];
+
+  // When the user clicks on <span> (x), close the modal
+  // span.onclick = function () {
+  //   modal.style.display = "none";
+  // };
+
   // RETURN
   //------------------------------------------------------------------------------------
 
@@ -476,58 +490,69 @@ export const NotesView = () => {
           <p className="time">{time}</p>
 
           <div className="addTaskContainer">
-            {newTask ? (
-              <>
-                <div className="taskModal">
-                  <div className="taskModalContent">
-                    <input
-                      name="title"
-                      placeholder="Title"
-                      onChange={changeTaskState}
-                    ></input>
-                    <textarea
-                      name="body"
-                      placeholder="NewNote"
-                      onChange={changeTaskState}
-                    ></textarea>
-                    <button
-                      onClick={(evt) => {
-                        evt.preventDefault();
+            <div id="Modal" className="taskModal">
+              <div className="taskModalContent">
+                <span
+                  className="close"
+                  onClick={() => {
+                    modal.style.display = "none";
+                  }}
+                >
+                  &times;
+                </span>
+                <input
+                  className="taskTitle"
+                  name="title"
+                  placeholder="Title"
+                  onChange={changeTaskState}
+                ></input>
+                <textarea
+                  className="taskBody"
+                  name="body"
+                  placeholder="NewNote"
+                  onChange={changeTaskState}
+                ></textarea>
+                <div className="taskButtons">
+                  <button
+                    className="taskButton"
+                    onClick={(evt) => {
+                      evt.preventDefault();
 
-                        const task = {
-                          title: addtask.title,
-                          body: addtask.body,
-                          tags: addtask.tags,
-                          datetime: addtask.datetime,
-                          user_id: addtask.user_id,
-                        };
+                      const task = {
+                        title: addtask.title,
+                        body: addtask.body,
+                        tags: addtask.tags,
+                        datetime: addtask.datetime,
+                        user_id: addtask.user_id,
+                      };
 
-                        createTask(task).then(() => retrieveTasks());
-                        setTaskBoolean(false);
-                      }}
-                    >
-                      submit
-                    </button>
-                    <button
-                      onClick={() => {
-                        setTaskBoolean(false);
-                      }}
-                    >
-                      cancel
-                    </button>
-                  </div>
+                      createTask(task).then(() => retrieveTasks());
+                      modal.style.display = "none";
+                    }}
+                  >
+                    submit
+                  </button>
+                  <button
+                    className="taskButton"
+                    onClick={() => {
+                      modal.style.display = "none";
+                    }}
+                  >
+                    cancel
+                  </button>
                 </div>
-              </>
-            ) : (
-              <button
-                className="addTask"
-                onClick={(e) => {
-                  setTaskBoolean(true);
-                }}
-              >
-                ➕ add task
-              </button>
-            )}
+              </div>
+            </div>
+
+            <button
+              id="myBtn"
+              className="addTask"
+              onClick={() => {
+                modal.style.display = "block";
+              }}
+            >
+              ➕ add task
+            </button>
           </div>
 
           <div>
