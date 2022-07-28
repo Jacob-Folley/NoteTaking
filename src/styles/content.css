@@ -85,3 +85,45 @@
   outline: none;
   border: 2px solid #4285f4;
 }
+
+.formContainer {
+  margin-left: 2%;
+  width: 90%;
+  height: 100%;
+}
+
+.formTitle {
+  background-color: rgb(29, 29, 30);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  margin: 1%;
+  width: 75%;
+}
+
+.formTitle:focus {
+  border-color: rgb(48, 45, 45);
+  outline-color: rgb(48, 45, 45);
+}
+
+.tagForm {
+  background-color: rgb(29, 29, 30);
+  border: none;
+  color: white;
+  font-size: 1rem;
+  margin: 2%;
+}
+
+.formBody {
+  background-color: rgb(29, 29, 30);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  margin: 1%;
+  width: 100%;
+  height: 80%;
+}
+
+.formBody:focus {
+  outline: none !important;
+}
