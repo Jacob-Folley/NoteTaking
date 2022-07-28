@@ -27,7 +27,7 @@ export const NotesView = () => {
 
   //STATES
   const [tasks, setTasks] = useState([]);
-  const [edit, setEdit] = useState(false);
+  const [edit, setEdit] = useState(true);
   const [noteId, setNoteId] = useState(0);
   const [newnote, setBoolean] = useState(false);
   const [notes, setNotes] = useState([]);
@@ -138,57 +138,57 @@ export const NotesView = () => {
   };
 
   // DISPLAYS THE NOTE THAT IS SELECTED
-  const noteRetrieved = () => {
-    return (
-      <>
-        <div className="header">
-          <button
-            className="expand"
-            onClick={() => {
-              history.push(`/tasks`);
-            }}
-          >
-            <span class="material-icons">open_in_full</span>
-          </button>
-        </div>
+  // const noteRetrieved = () => {
+  //   return (
+  //     <>
+  //       <div className="header">
+  //         <button
+  //           className="expand"
+  //           onClick={() => {
+  //             history.push(`/tasks`);
+  //           }}
+  //         >
+  //           <span class="material-icons">open_in_full</span>
+  //         </button>
+  //       </div>
 
-        <div className="contentContainer">
-          <div className="contentTitle">
-            <div>
-              <h2>{note.title}</h2>
-            </div>
-            <div>
-              <button
-                className="ButtonsHeaderRight"
-                onClick={() => {
-                  setEdit(true);
-                }}
-              >
-                Edit
-              </button>
-              <button
-                className="ButtonsHeaderRight"
-                onClick={() => {
-                  deleteNote(noteId)
-                    .then(() => {
-                      setNoteId(0);
-                    })
-                    .then(() => {
-                      retrieveNotes();
-                    })
-                    .then(filterNotes());
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-          <p className="contentTags">{note.tags}</p>
-          <p className="contentBody">{note.body}</p>
-        </div>
-      </>
-    );
-  };
+  //       <div className="contentContainer">
+  //         <div className="contentTitle">
+  //           <div>
+  //             <h2>{note.title}</h2>
+  //           </div>
+  //           <div>
+  //             <button
+  //               className="ButtonsHeaderRight"
+  //               onClick={() => {
+  //                 setEdit(true);
+  //               }}
+  //             >
+  //               Edit
+  //             </button>
+  //             <button
+  //               className="ButtonsHeaderRight"
+  //               onClick={() => {
+  //                 deleteNote(noteId)
+  //                   .then(() => {
+  //                     setNoteId(0);
+  //                   })
+  //                   .then(() => {
+  //                     retrieveNotes();
+  //                   })
+  //                   .then(filterNotes());
+  //               }}
+  //             >
+  //               Delete
+  //             </button>
+  //           </div>
+  //         </div>
+  //         <p className="contentTags">{note.tags}</p>
+  //         <p className="contentBody">{note.body}</p>
+  //       </div>
+  //     </>
+  //   );
+  // };
 
   // FILTERS NOTES TO GET ONLY CURRENT USER NOTES
   const filterNotes = () => {
@@ -255,115 +255,136 @@ export const NotesView = () => {
   const editNote = () => {
     return (
       <>
-        <input
-          name="title"
-          placeholder="Title"
-          defaultValue={note.title}
-          onChange={changeFormState}
-        />
-        <input placeholder="Tags"></input>
-        <p>{Date.now()}</p>
-        <textarea
-          name="body"
-          placeholder="NewNote"
-          defaultValue={note.body}
-          onChange={changeFormState}
-        />
-        <button
-          onClick={(evt) => {
-            evt.preventDefault();
+        <div className="header">
+          <button
+            className="expand"
+            onClick={() => {
+              history.push(`/tasks`);
+            }}
+          >
+            <span class="material-icons">open_in_full</span>
+          </button>
+        </div>
+        <div className="formContainer">
+          <div className="contentTitle">
+            <input
+              className="formTitle"
+              name="title"
+              placeholder="Title"
+              defaultValue={note.title}
+              onChange={changeFormState}
+            />
+            <button
+              className="ButtonsHeaderRight"
+              onClick={(evt) => {
+                evt.preventDefault();
 
-            const editnote = {
-              id: noteId,
-              title: addnote.title == "" ? note.title : addnote.title,
-              body: addnote.body == "" ? note.body : addnote.body,
-              tags: addnote.tags,
-              datetime: note.datetime,
-              user_id: user,
-            };
+                const editnote = {
+                  id: noteId,
+                  title: addnote.title == "" ? note.title : addnote.title,
+                  body: addnote.body == "" ? note.body : addnote.body,
+                  tags: addnote.tags,
+                  datetime: note.datetime,
+                  user_id: user,
+                };
 
-            updateNote(editnote).then(() => history.push("/"));
-            retrieveNotes();
-            setEdit(false);
-            setBoolean(false);
-          }}
-        >
-          Save
-        </button>
+                updateNote(editnote).then(() => history.push("/"));
+                retrieveNotes();
+                setEdit(false);
+                setBoolean(false);
+              }}
+            >
+              Save
+            </button>
+          </div>
+          <input className="tagForm" placeholder="Tags"></input>
+          {/* <p>{Date.now()}</p> */}
+          <textarea
+            className="formBody"
+            name="body"
+            placeholder="NewNote"
+            defaultValue={note.body}
+            onChange={changeFormState}
+          />
+        </div>
       </>
     );
   };
 
   // DISPLAYS THE NOTE WHEN NOTHING IS SELECTED
-  const Content = () => {
-    if (usernotes.length > 0) {
-      return (
-        <>
-          <div className="header">
-            <button
-              className="expand"
-              onClick={() => {
-                history.push(`/tasks`);
-              }}
-            >
-              <span class="material-icons">open_in_full</span>
-            </button>
-          </div>
-          <div className="contentContainer">
-            <div className="contentTitle">
-              <div>
-                <h2>{usernotes[usernotes.length - 1].title}</h2>
-              </div>
-              <div>
-                <button
-                  className="ButtonsHeaderRight"
-                  onClick={() => {
-                    setNoteId(usernotes[usernotes.length - 1].id);
-                    setEdit(true);
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  className="ButtonsHeaderRight"
-                  onClick={() => {
-                    deleteNote(usernotes[usernotes.length - 1].id).then(() => {
-                      retrieveNotes()
-                        .then(filterNotes())
-                        .then(() => {
-                          setNoteId(usernotes[getLastNote()].id);
-                        });
-                    });
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
+  // const Content = () => {
+  //   if (usernotes.length > 0) {
+  //     return (
+  //       <>
+  //         <div className="header">
+  //           <button
+  //             className="expand"
+  //             onClick={() => {
+  //               history.push(`/tasks`);
+  //             }}
+  //           >
+  //             <span class="material-icons">open_in_full</span>
+  //           </button>
+  //         </div>
+  //         <div className="contentContainer">
+  //           <div className="contentTitle">
+  //             <div>
+  //               <h2>{usernotes[usernotes.length - 1].title}</h2>
+  //             </div>
+  //             <div>
+  //               <button
+  //                 className="ButtonsHeaderRight"
+  //                 onClick={() => {
+  //                   setNoteId(usernotes[usernotes.length - 1].id);
+  //                   setEdit(true);
+  //                 }}
+  //               >
+  //                 Edit
+  //               </button>
+  //               <button
+  //                 className="ButtonsHeaderRight"
+  //                 onClick={() => {
+  //                   deleteNote(usernotes[usernotes.length - 1].id).then(() => {
+  //                     retrieveNotes()
+  //                       .then(filterNotes())
+  //                       .then(() => {
+  //                         setNoteId(usernotes[getLastNote()].id);
+  //                       });
+  //                   });
+  //                 }}
+  //               >
+  //                 Delete
+  //               </button>
+  //             </div>
+  //           </div>
 
-            <p className="contentTags">
-              {usernotes[usernotes.length - 1].tags}
-            </p>
-            <p className="contentBody">
-              {usernotes[usernotes.length - 1].body}
-            </p>
-          </div>
-        </>
-      );
-    } else {
-      return "";
-    }
-  };
+  //           <p className="contentTags">
+  //             {usernotes[usernotes.length - 1].tags}
+  //           </p>
+  //           <p className="contentBody">
+  //             {usernotes[usernotes.length - 1].body}
+  //           </p>
+  //         </div>
+  //       </>
+  //     );
+  //   } else {
+  //     return "";
+  //   }
+  // };
 
   // CHECKS THE STATE OF WHAT CONTENT NEEDS TO BE DISPLAYED
+  // const contentState = () => {
+  //   return edit == true
+  //     ? editNote()
+  //     : newnote
+  //     ? newNote()
+  //     : noteId < 1
+  //     ? Content()
+  //     : noteRetrieved();
+  // };
+
   const contentState = () => {
-    return edit == true
-      ? editNote()
-      : newnote
-      ? newNote()
-      : noteId < 1
-      ? Content()
-      : noteRetrieved();
+    return edit == true ? editNote() : newNote();
   };
 
   const sortOld = () => {
@@ -426,14 +447,14 @@ export const NotesView = () => {
                 };
 
                 createTask(task).then(() => retrieveTasks());
-                setTaskBoolean(false);
+                setEdit(true);
               }}
             >
               submit
             </button>
             <button
               onClick={() => {
-                setTaskBoolean(false);
+                setEdit(true);
               }}
             >
               cancel
@@ -632,7 +653,7 @@ export const NotesView = () => {
               <button
                 className="addButton"
                 onClick={() => {
-                  setBoolean(true);
+                  setEdit(false);
                 }}
               >
                 <span class="material-icons">add</span>
@@ -652,6 +673,7 @@ export const NotesView = () => {
                       id="box"
                       onClick={(evt) => {
                         setNoteId(note.id);
+                        setEdit(true);
                       }}
                     >
                       <h3 className="noteTitle">{note.title}</h3>
